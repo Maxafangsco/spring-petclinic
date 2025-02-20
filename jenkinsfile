@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+
+    triggers {
+        cron('H/3 * * * 4') // Runs every 3 minutes on Thursdays
+    }
+
+    tools {
+        maven 'Maven_3.8.1' // Ensure this matches your Jenkins Maven installation
+        jdk 'JDK_17' // Ensure this matches your Jenkins JDK installation
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'develope', url: 'https://github.com/Maxafangsco/spring-petclinic.git'
+            }
+        }
+
+        stage('Build and Test') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('Generate Jacoco Coverage Report') {
+            steps {
+                sh 'mvn test jacoco:report'
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: 'target/site/jacoco/index.html', fingerprint: true
+                }
+            }
+        }
+
+        stage('Archive Artifact') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            }
+        }
+    }
+}

@@ -6,8 +6,7 @@ pipeline {
     }
 
     tools {
-        maven 'Maven_3.8.1' // Ensure this matches your Jenkins Maven installation
-        jdk 'JDK_17' // Ensure this matches your Jenkins JDK installation
+        maven 'maven3'
     }
 
     stages {
